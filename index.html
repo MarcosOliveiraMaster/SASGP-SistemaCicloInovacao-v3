@@ -1,0 +1,357 @@
+<html>
+<head>
+	<title>Trello Style Project</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header class="header">
+		<input type="text" id="searchInput" placeholder="Buscar..." />
+		<div class="header-buttons">
+			<button id="btnBibliotecaSolucoes">Biblioteca de soluções</button>
+			<button id="openEditalBtn">Adicionar Edital</button>
+		</div>
+	</header>
+	<main class="board">
+		<section class="column">
+			<h2>Edital em análise</h2>
+			<div class="card-list" id="col-edital"></div>
+		</section>
+		<section class="column">
+			<h2>Inscrição</h2>
+			<div class="card-list" id="col-inscricao"></div>
+		</section>
+		<section class="column">
+			<h2>Resultados preliminares</h2>
+			<div class="card-list" id="col-preliminar"></div>
+		</section>
+		<section class="column">
+			<h2>Calendário de Atividades</h2>
+			<div class="card-list" id="col-calendario"></div>
+		</section>
+		<section class="column">
+			<h2>Resultados Finais e Desempenho</h2>
+			<div class="card-list" id="col-finais"></div>
+		</section>
+	</main>
+	<div id="modalEdital" class="modal">
+		<div class="modal-content">
+			<span class="close" id="closeModal">&times;</span>
+			<form id="formAddEdital">
+				<section class="modal-section" id="InformacoesBase">
+					<h2>Informações Iniciais</h2>
+					<h3>Arquivo Edital</h3>
+					<div class="input-group">
+						<input type="file" id="inputArquivoEdital" name="arquivoEdital" accept="application/pdf" style="display:none;" />
+						<button type="button" id="btnUploadArquivo">Selecionar arquivo PDF</button>
+						<span id="nomeArquivoSelecionado" class="nome-arquivo">Nenhum arquivo selecionado</span>
+					</div>
+					<div class="input-group">
+						<label for="inputNomeEdital">Nome Edital</label>
+						<input type="text" id="inputNomeEdital" name="nomeEdital" required autocomplete="off" />
+					</div>
+				</section>
+				<section class="modal-section" id="DatasEdital">
+					<div class="datas-row">
+						<div class="data-group">
+							<label for="inputDataLancamento">Dia de lançamento do edital</label>
+							<input type="date" id="inputDataLancamento" name="dataLancamento" />
+						</div>
+						<div class="data-group">
+							<label for="inputDataEncerramento">Encerramento do edital</label>
+							<input type="date" id="inputDataEncerramento" name="dataEncerramento" />
+						</div>
+					</div>
+				</section>
+				<section class="modal-section" id="DetalhesEdital">
+					<h2>Detalhes do edital</h2>
+					<div class="detalhes-row">
+						<div class="detalhes-col">
+							<div class="input-group">
+								<label for="inputOrganizacao">Organização</label>
+								<input type="text" id="inputOrganizacao" name="organizacao" />
+							</div>
+							<div class="input-group">
+								<label for="inputTipoEdital">Tipo Edital</label>
+								<select id="inputTipoEdital" name="tipoEdital">
+									<option value="">Selecione</option>
+									<option value="subvenção econominca">subvenção econominca</option>
+									<option value="Linha de crédito sem proestação de contas">Linha de crédito sem proestação de contas</option>
+									<option value="Linha de crédito com prestação de Contas">Linha de crédito com prestação de Contas</option>
+								</select>
+							</div>
+							<div class="input-group">
+								<label for="inputValorEdital">Valor do edital</label>
+								<input type="text" id="inputValorEdital" name="valorEdital" />
+							</div>
+							<div class="input-group">
+								<label for="inputAreaAtuacao">Área de atuação</label>
+								<input type="text" id="inputAreaAtuacao" name="areaAtuacao" />
+							</div>
+						</div>
+						<div class="detalhes-col">
+							<div class="input-group">
+								<label for="inputPlataformaInscrita">Plataforma Inscrita</label>
+								<select id="inputPlataformaInscrita" name="plataformaInscrita">
+									<option value="">Selecione</option>
+									<option value="SasGP - Gestora de projeto">SasGP - Gestora de projeto</option>
+									<option value="Kacktux - SoftHouse">Kacktux - SoftHouse</option>
+									<option value="Prisma - Software de Gestão de projetos">Prisma - Software de Gestão de projetos</option>
+									<option value="Wello - Software de Saúdo no Trabalho">Wello - Software de Saúdo no Trabalho</option>
+									<option value="Aurora - Comunicação Interna">Aurora - Comunicação Interna</option>
+								</select>
+							</div>
+							<div class="input-group">
+								<label for="inputTempoCNPJ">Tempo de CNPJ</label>
+								<input type="text" id="inputTempoCNPJ" name="tempoCNPJ" />
+							</div>
+							<div class="input-group">
+								<label for="inputDuracaoEdital">Duração do Edital</label>
+								<input type="text" id="inputDuracaoEdital" name="duracaoEdital" />
+							</div>
+							<div class="input-group input-group-row">
+								<div class="input-half">
+									<label for="inputEstado">Estado</label>
+									<select id="inputEstado" name="estado">
+										<option value="">Selecione o estado</option>
+									</select>
+								</div>
+								<div class="input-half">
+									<label for="inputCidade">Cidade</label>
+									<select id="inputCidade" name="cidade">
+										<option value="">Selecione a cidade</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="modal-section" id="SobreEdital">
+					<h2>Sobre o Edital</h2>
+					<div class="input-group">
+						<textarea id="inputSobreEdital" name="sobreEdital" style="height:300px;resize:vertical;overflow:auto;"></textarea>
+					</div>
+					<button type="button" id="btnResumoIA">Resumo com IA</button>
+				</section>
+				<section class="modal-section" id="AnaliseAderencia">
+					<h2>Análise de aderência do edital</h2>
+					<div class="aderencia-checklist">
+						<label><input type="checkbox" class="aderencia-check" value="valor-subvencao"> Valor de subvenção igual ou maior à R$ 35 mil</label>
+						<label><input type="checkbox" class="aderencia-check" value="duracao-edital"> Duração do edital menor ou igual a 24 meses</label>
+						<label><input type="checkbox" class="aderencia-check" value="software-solucao"> Aplicação ou criação de software como solução</label>
+						<label><input type="checkbox" class="aderencia-check" value="tipo-subvencao"> Editais do tipo Subvenção econômica</label>
+						<label><input type="checkbox" class="aderencia-check" value="propriedade-intelectual"> Propriedade intelectual da solução pertence a SASGP</label>
+						<label><input type="checkbox" class="aderencia-check" value="trl-compatível"> TRL compatível</label>
+					</div>
+					<div class="progress-bar-wrap">
+						<div class="progress-labels">
+							<span>Aderência</span>
+						</div>
+						<div class="progress-container">
+							<div class="progress-bar">
+								<div class="progress-bar-fill" id="aderencia-progress" style="width: 0%;"></div>
+							</div>
+							<span id="aderencia-percent">0%</span>
+						</div>
+					</div>
+				</section>
+				<section class="modal-section" id="Equipe">
+					<h2>Equipe Executora</h2>
+					<div class="input-group">
+						<div class="custom-multiselect" id="customEquipeSelect">
+							<div class="custom-multiselect-selected" id="customEquipeSelected">Selecione Equipe</div>
+							<div class="custom-multiselect-options" id="customEquipeOptions">
+								<label><input type="checkbox" value="Marcos Oliveira"> Marcos Oliveira</label>
+								<label><input type="checkbox" value="Simone Alves"> Simone Alves</label>
+								<label><input type="checkbox" value="Diego Jucá"> Diego Jucá</label>
+								<label><input type="checkbox" value="Gabriel Jatobá"> Gabriel Jatobá</label>
+								<label><input type="checkbox" value="Vinicius Aranda"> Vinicius Aranda</label>
+								<label><input type="checkbox" value="Maria Eduarda"> Maria Eduarda</label>
+								<label><input type="checkbox" value="Emily Leodino"> Emily Leodino</label>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="modal-section" id="AtividadesAtribuidas">
+					<h2>Atividades atribuídas</h2>
+					<div class="atividades-container">
+						<table id="tabelaAtividades">
+							<thead>
+								<tr>
+									<th style="width:30%;">Responsável</th>
+									<th style="width:60%;">Atividade</th>
+									<th style="width:10%;">Check</th>
+								</tr>
+							</thead>
+							<tbody id="tbodyAtividades">
+								<tr>
+									<td><select class="select-responsavel"></select></td>
+									<td><textarea class="textarea-atividade" rows="1"></textarea></td>
+									<td><input type="checkbox" class="checkbox-check"></td>
+								</tr>
+							</tbody>
+						</table>
+						<button type="button" id="btnAddLinha">+ Adicionar Linha</button>
+					</div>
+				</section>
+				<section class="modal-section" id="MapeamentoSolucao">
+					<h2>Mapeamento da solução</h2>
+					<div class="mapeamento-grid">
+						<div class="mapeamento-col">
+							<h3>Detalhes da solução</h3>
+							<div class="botoes-container">
+								<button class="btn-mapeamento">Detalhes da solução</button>
+								<button class="btn-mapeamento">Descrição da solução</button>
+								<button class="btn-mapeamento">Diferencial da solução</button>
+								<button class="btn-mapeamento">Estagio de desenvolvimento da solução</button>
+							</div>
+						</div>
+						<div class="mapeamento-col">
+							<h3>Contexto da solução</h3>
+							<div class="botoes-container">
+								<button class="btn-mapeamento">Desafio de implementação ou Desafio de mercado</button>
+								<button class="btn-mapeamento">Tamanho de mercado</button>
+								<button class="btn-mapeamento">Contextualização da oportunidade do mercado</button>
+								<button class="btn-mapeamento">Alinhamento com ODS + Justificativa</button>
+							</div>
+						</div>
+						<div class="mapeamento-col">
+							<h3>Impactos</h3>
+							<div class="botoes-container">
+								<button class="btn-mapeamento">Impactos sociais</button>
+								<button class="btn-mapeamento">contribuição para sociedade</button>
+								<button class="btn-mapeamento">Impacto Socioambiental</button>
+							</div>
+						</div>
+						<div class="mapeamento-col">
+							<h3>Escalabilidade</h3>
+							<div class="botoes-container">
+								<button class="btn-mapeamento">Adição de ferramentas</button>
+								<button class="btn-mapeamento">Atuação em novos mercados</button>
+								<button class="btn-mapeamento">Futuras parcerias e projetos de aplicação</button>
+							</div>
+						</div>
+						<div class="mapeamento-col">
+							<h3>Materiais e links de Apoio</h3>
+							<div class="botoes-container">
+								<button class="btn-mapeamento">Vídeo Pitch</button>
+								<button class="btn-mapeamento">Pitch Deck</button>
+								<button class="btn-mapeamento">Acesso a plataforma</button>
+								<button class="btn-mapeamento">Biblioteca de imagnes da solução</button>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="modal-section" id="CalendarioAtividade">
+					<h2>Calendário de atividades previstas no edital</h2>
+					<div class="atividades-container">
+						<table id="tabelaCalendario">
+							<thead>
+								<tr>
+									<th style="width:25%;">Responsável</th>
+									<th style="width:35%;">Atividade</th>
+									<th style="width:20%;">Prazo</th>
+									<th style="width:10%;">Check</th>
+								</tr>
+							</thead>
+							<tbody id="tbodyCalendario">
+								<tr>
+									<td><select class="select-responsavel"></select></td>
+									<td><textarea class="textarea-atividade" rows="1"></textarea></td>
+									<td><input type="date" class="input-prazo"></td>
+									<td><input type="checkbox" class="checkbox-check"></td>
+								</tr>
+							</tbody>
+						</table>
+						<button type="button" id="btnAddLinhaCalendario">+ Adicionar Linha</button>
+					</div>
+				</section>
+				<section class="modal-section" id="ResultadosFinais">
+					<h2>Resultados Finais e Desempenho</h2>
+					<h3>StatusEdital</h3>
+					<div class="status-edital-grid">
+						<label class="status-item">
+							<input type="checkbox" class="status-check" value="inscricao-aprovada">
+							<span>Inscrição aprovada</span>
+						</label>
+						<label class="status-item">
+							<input type="checkbox" class="status-check" value="inscricao-vedada">
+							<span>Inscrição Vedada</span>
+						</label>
+						<label class="status-item">
+							<input type="checkbox" class="status-check" value="em-execucao">
+							<span>Em execução</span>
+						</label>
+						<label class="status-item">
+							<input type="checkbox" class="status-check" value="edital-concluido">
+							<span>Edital concluído</span>
+						</label>
+					</div>
+					<div class="comentarios-finais">
+						<h3>Comentários finais e avaliação de inscrição em edital</h3>
+						<textarea id="inputComentariosFinais" name="comentariosFinais" rows="6" placeholder="Digite seus comentários finais..."></textarea>
+					</div>
+				</section>
+				<div class="modal-actions">
+					<button type="submit" id="btnSalvarEdital">Salvar</button>
+					<button type="button" id="btnCancelarEdital">Cancelar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="modalColecaoEdital" class="modal">
+		<div class="modal-colecao-content">
+			<span class="close" id="closeModalColecao">&times;</span>
+			<form id="formColecaoEdital">
+				<section class="modal-section">
+					<h2>Detalhes da solução</h2>
+					<div class="input-group" style="display: flex; align-items: center; gap: 16px;">
+						<label for="inputPlataformaInscrita" style="margin-bottom:0;">Selecione a solução digital:</label>
+						<select id="inputPlataformaInscrita" name="plataformaInscrita">
+							<option value="">Selecione</option>
+							<option value="SasGP - Gestora de projeto">SasGP - Gestora de projeto</option>
+							<option value="Kacktux - SoftHouse">Kacktux - SoftHouse</option>
+							<option value="Prisma - Software de Gestão de projetos">Prisma - Software de Gestão de projetos</option>
+							<option value="Wello - Software de Saúdo no Trabalho">Wello - Software de Saúdo no Trabalho</option>
+							<option value="Aurora - Comunicação Interna">Aurora - Comunicação Interna</option>
+						</select>
+					</div>
+					<div class="input-group"><label>Descrição da solução</label><textarea name="descricaoSolucao" rows="2"></textarea></div>
+					<div class="input-group"><label>Diferencial da solução</label><textarea name="diferencialSolucao" rows="2"></textarea></div>
+					<div class="input-group"><label>Estagio de desenvolvimento da solução</label><textarea name="estagioSolucao" rows="2"></textarea></div>
+				</section>
+				<section class="modal-section">
+					<h2>Contexto da solução</h2>
+					<div class="input-group"><label>Desafio de implementação ou Desafio de mercado</label><textarea name="desafioSolucao" rows="2"></textarea></div>
+					<div class="input-group"><label>Tamanho de mercado</label><textarea name="tamanhoMercado" rows="2"></textarea></div>
+					<div class="input-group"><label>Contextualização da oportunidade do mercado</label><textarea name="contextoOportunidade" rows="2"></textarea></div>
+					<div class="input-group"><label>Alinhamento com ODS + Justificativa</label><textarea name="odsJustificativa" rows="2"></textarea></div>
+				</section>
+				<section class="modal-section">
+					<h2>Impactos</h2>
+					<div class="input-group"><label>Impactos sociais</label><textarea name="impactosSociais" rows="2"></textarea></div>
+					<div class="input-group"><label>Contribuição para sociedade</label><textarea name="contribuicaoSociedade" rows="2"></textarea></div>
+					<div class="input-group"><label>Impacto Socioambiental</label><textarea name="impactoSocioambiental" rows="2"></textarea></div>
+				</section>
+				<section class="modal-section">
+					<h2>Escalabilidade</h2>
+					<div class="input-group"><label>Adição de ferramentas</label><textarea name="adicaoFerramentas" rows="2"></textarea></div>
+					<div class="input-group"><label>Atuação em novos mercados</label><textarea name="atuacaoNovosMercados" rows="2"></textarea></div>
+					<div class="input-group"><label>Futuras parcerias e projetos de aplicação</label><textarea name="futurasParcerias" rows="2"></textarea></div>
+				</section>
+				<section class="modal-section">
+					<h2>Materiais e links de Apoio</h2>
+					<div class="input-group"><label>Vídeo Pitch</label><textarea name="videoPitch" rows="2"></textarea></div>
+					<div class="input-group"><label>Pitch Deck</label><textarea name="pitchDeck" rows="2"></textarea></div>
+					<div class="input-group"><label>Acesso a plataforma</label><textarea name="acessoPlataforma" rows="2"></textarea></div>
+					<div class="input-group"><label>Biblioteca de imagnes da solução</label><textarea name="bibliotecaImagens" rows="2"></textarea></div>
+				</section>
+				<div class="modal-actions">
+					<button type="submit" id="btnSalvarColecao">Salvar</button>
+					<button type="button" id="btnCancelarColecao">Cancelar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>
