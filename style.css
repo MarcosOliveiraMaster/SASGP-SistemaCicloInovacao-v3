@@ -1,3 +1,19 @@
+/* ===== Destaque para o nome SasGP - Análise de Editais ===== */
+.titulo-analise {
+	display: inline-block;
+	margin-left: 18px;
+	padding: 6px 22px;
+	font-size: 1.25rem;
+	font-weight: 800;
+	letter-spacing: 0.5px;
+	color: #fff;
+	background: linear-gradient(90deg, #ff9800 0%, #ff8800 60%, #ff6600 100%);
+	border-radius: 24px 8px 24px 8px;
+	box-shadow: 0 2px 12px rgba(255,152,0,0.18);
+	text-shadow: 1px 2px 8px rgba(255,136,0,0.12);
+	font-family: 'Segoe UI', 'Arial', sans-serif;
+	transition: transform 0.15s, box-shadow 0.15s;
+}
 /* ===== Custom Select for Biblioteca de Soluções Modal ===== */
 #modalColecaoEdital select#inputPlataformaInscrita {
 	background: #fff;

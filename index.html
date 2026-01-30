@@ -5,6 +5,8 @@
 </head>
 <body>
 	<header class="header">
+		
+		<div class="titulo-analise">SasGP - Análise de Editais</div>
 		<input type="text" id="searchInput" placeholder="Buscar..." />
 		<div class="header-buttons">
 			<button id="btnBibliotecaSolucoes">Biblioteca de soluções</button>
@@ -45,9 +47,22 @@
 						<button type="button" id="btnUploadArquivo">Selecionar arquivo PDF</button>
 						<span id="nomeArquivoSelecionado" class="nome-arquivo">Nenhum arquivo selecionado</span>
 					</div>
-					<div class="input-group">
-						<label for="inputNomeEdital">Nome Edital</label>
-						<input type="text" id="inputNomeEdital" name="nomeEdital" required autocomplete="off" />
+					<div class="input-group" style="display:flex;gap:12px;align-items:flex-start;">
+						<div style="flex:1;min-width:0;">
+							<label for="inputNomeEdital">Nome Edital</label>
+							<input type="text" id="inputNomeEdital" name="nomeEdital" required autocomplete="off" style="width:100%;" />
+						</div>
+						<div style="width:220px;">
+							<label for="inputStatusEdital">Status</label>
+							<select id="inputStatusEdital" name="statusEdital">
+								<option value="">Selecione</option>
+								<option value="em-analise">Em análise</option>
+								<option value="em-inscricao">Em inscrição</option>
+								<option value="em-execucao">Em execução</option>
+								<option value="submissao-nao-aprovada">Submissão não aprovada</option>
+								<option value="concluido">Concluído</option>
+							</select>
+						</div>
 					</div>
 				</section>
 				<section class="modal-section" id="DatasEdital">
@@ -199,10 +214,10 @@
 						<div class="mapeamento-col">
 							<h3>Detalhes da solução</h3>
 							<div class="botoes-container">
-								<button class="btn-mapeamento">Detalhes da solução</button>
-								<button class="btn-mapeamento">Descrição da solução</button>
-								<button class="btn-mapeamento">Diferencial da solução</button>
-								<button class="btn-mapeamento">Estagio de desenvolvimento da solução</button>
+								<button class="btn-mapeamento" data-field="detalhesSolucao">Detalhes da solução</button>
+								<button class="btn-mapeamento" data-field="descricaoSolucao">Descrição da solução</button>
+								<button class="btn-mapeamento" data-field="diferencialSolucao">Diferencial da solução</button>
+								<button class="btn-mapeamento" data-field="estagioSolucao">Estagio de desenvolvimento da solução</button>
 							</div>
 						</div>
 						<div class="mapeamento-col">
