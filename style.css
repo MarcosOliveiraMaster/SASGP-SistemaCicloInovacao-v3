@@ -700,6 +700,163 @@ body {
 	width: 100%;
 	border-collapse: collapse;
 }
+
+/* ===== Etapas de Aderência (Timeline com preenchimento líquido) ===== */
+.etapas-aderencia {
+	padding: 12px 0 6px 0;
+	font-size: 0.92rem; /* fonte geral menor na seção */
+}
+.etapas-aderencia .timeline {
+	position: relative;
+	height: 110px; /* mais espaço para evitar sobreposição */
+	display: flex;
+	align-items: flex-start;
+	padding: 10px 8px 0 8px;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	overflow: hidden; /* evita que o preenchimento ultrapasse e expanda o modal */
+}
+.etapas-aderencia .timeline-line {
+	position: absolute;
+	left: 5%;
+	right: 5%;
+	height: 8px;
+	background: #ffe9d0;
+	border-radius: 8px;
+	top: 36px; /* posiciona linha acima dos botões */
+	transform: translateY(-50%);
+	z-index: 1;
+	box-sizing: border-box;
+	max-width: calc(100% - 10% ); /* linha = 90% do container */
+}
+.etapas-aderencia .timeline-fill {
+	position: absolute;
+	left: 5%;
+	height: 8px;
+	background: linear-gradient(90deg, #ff9800 30%, #ffb74d 100%);
+	border-radius: 8px;
+	top: 36px; /* alinhado com a linha */
+	transform: translateY(-50%);
+	z-index: 2;
+	width: 0%;
+	transition: width 700ms cubic-bezier(.22,.9,.3,1);
+	overflow: hidden; /* esconder qualquer excesso (wave reduzido) */
+	will-change: width;
+}
+.etapas-aderencia .timeline-fill.wave::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: -4px;
+	width: 40px; /* menor para não ultrapassar o modal */
+	height: 16px;
+	background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.28), rgba(255,255,255,0));
+	filter: blur(4px);
+	animation: wave 900ms linear;
+	border-radius: 50%;
+	pointer-events: none;
+}
+@keyframes wave {
+	from { transform: translateX(-14px); }
+	to { transform: translateX(14px); }
+}
+.etapas-aderencia .timeline-steps {
+	position: relative;
+	display: flex;
+	gap: 0;
+	width: 100%;
+	z-index: 4; /* acima do preenchimento */
+	padding-top: 8px; /* espaço para círculos e linha */
+	flex-wrap: wrap; /* permite quebra em telas pequenas */
+}
+.etapas-aderencia .step {
+	flex: 1 1 25%;
+	text-align: center;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 6px 6px 12px 6px;
+	min-width: 80px;
+	box-sizing: border-box;
+}
+.etapas-aderencia .timeline-circle {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: #fff;
+	border: 3px solid #ffe0b2;
+	margin: 0 auto;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+	transition: transform 280ms ease, background 280ms ease, border-color 280ms ease;
+	position: relative;
+	z-index: 5; /* garantir sobreposição sobre a linha */
+}
+.etapas-aderencia .timeline-circle.active {
+	background: linear-gradient(180deg,#ff9800,#ffb74d);
+	border-color: #ff9800;
+	transform: scale(1.12);
+}
+.etapas-aderencia .etapa-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 12px; /* distancia uniforme */
+	font-size: clamp(0.78rem, 1.0vw, 0.92rem); /* fonte menor e responsiva */
+	background: rgba(255,152,0,0.06);
+	border: 1px solid transparent;
+	color: #444;
+	cursor: pointer;
+	padding: 8px 12px;
+	border-radius: 18px;
+	transition: color 220ms ease, transform 220ms ease, background 240ms ease, box-shadow 240ms ease;
+	box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+	min-height: 40px; /* mesma altura reduzida */
+	height: 40px;
+	width: min(88%, 200px); /* largura menor para compactar */
+	text-align: center;
+	white-space: normal;
+	line-height: 1.05;
+	box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+	.etapas-aderencia .step {
+		flex: 1 1 50%;
+	}
+	.etapas-aderencia .timeline-line,
+	.etapas-aderencia .timeline-fill {
+		left: 8%;
+		right: 8%;
+	}
+	.etapas-aderencia .etapa-btn { width: 86%; }
+}
+
+@media (max-width: 420px) {
+	.etapas-aderencia .step { flex: 1 1 100%; }
+	.etapas-aderencia .timeline-line,
+	.etapas-aderencia .timeline-fill { left: 6%; right: 6%; }
+	.etapas-aderencia .etapa-btn { width: 92%; font-size: clamp(0.78rem, 2.4vw, 0.95rem); }
+}
+.etapas-aderencia .etapa-btn:hover {
+	background: rgba(255,152,0,0.12);
+	color: #ff6f00;
+	transform: translateY(-2px);
+}
+.etapas-aderencia .etapa-btn:focus { outline: 2px solid rgba(255,136,0,0.18); }
+.etapas-aderencia .etapa-btn.active {
+	color: #fff;
+	background: linear-gradient(90deg,#ff9800,#ffb74d);
+	box-shadow: 0 6px 18px rgba(255,136,0,0.12);
+	transform: translateY(-4px) scale(1.02);
+	font-weight: 700;
+	border: 1px solid rgba(255,140,0,0.18);
+}
+.etapas-note { font-size: 0.9rem; color: #666; margin-top:6px }
+
+}
 #tabelaCalendario th {
 	background: #ff9800;
 	color: #fff;

@@ -23,6 +23,16 @@ export function collectFormAddEdital() {
   });
   // Aderencia checks
   data.aderencia = getCheckedValues('.aderencia-check');
+  // Etapas de Aderência (booleanas)
+  data.etapas = {};
+  const steps = document.querySelectorAll('#etapasAderencia .step');
+  if (steps && steps.length) {
+    steps.forEach(s => {
+      const key = s.dataset.key;
+      const btn = s.querySelector('.etapa-btn');
+      data.etapas[key] = !!(btn && btn.classList.contains('active'));
+    });
+  }
   // Status checks (Resultados Finais)
   data.statusChecks = getCheckedValues('.status-check');
   // Equipe selecionada

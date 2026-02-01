@@ -438,6 +438,21 @@ function openEditCardModal(cardId, colId) {
 		modal.classList.add('show');
 		inputNomeEdital.focus();
 		modal.querySelector('h2').textContent = 'Editar Edital';
+
+		// carregar estado das etapas salvo no banco (se houver vínculo)
+		(async () => {
+			if (card.editalId) {
+				try {
+					const valores = await import('./valores.js');
+					const data = await valores.getEdital(card.editalId);
+					if (data && data.etapas) {
+						setEtapasFromData(data.etapas);
+					}
+				} catch (err) {
+					console.warn('Erro ao carregar etapas do edital:', err);
+				}
+			}
+		})();
 	}
 }
 
@@ -601,6 +616,100 @@ async function initApp() {
 }
 
 initApp();
+
+// Inicializa a timeline de Etapas de Aderência
+function initEtapasAderencia() {
+	const container = document.getElementById('etapasAderencia');
+	if (!container) return;
+	const hiddenInput = document.getElementById('inputEtapaAderencia');
+	const steps = Array.from(container.querySelectorAll('.step'));
+	const fill = container.querySelector('.timeline-fill');
+
+	// estado interno das etapas: { key: boolean }
+	const etapasState = {};
+
+	function renderFromState() {
+		const total = steps.length;
+		const activeCount = steps.reduce((acc, step) => {
+			const key = step.dataset.key;
+			const val = !!etapasState[key];
+			const btn = step.querySelector('.etapa-btn');
+			const circle = step.querySelector('.timeline-circle');
+			if (btn) btn.classList.toggle('active', val);
+			if (btn) btn.setAttribute('aria-pressed', val ? 'true' : 'false');
+			if (circle) circle.classList.toggle('active', val);
+			return acc + (val ? 1 : 0);
+		}, 0);
+		const pct = total > 0 ? Math.round((activeCount / total) * 100) : 0;
+		if (fill) {
+			fill.style.width = pct + '%';
+			fill.classList.remove('wave'); void fill.offsetWidth; fill.classList.add('wave');
+		}
+		if (hiddenInput) hiddenInput.value = JSON.stringify(etapasState);
+	}
+
+	async function persistEtapas() {
+		// se houver um edital aberto, mesclar e salvar
+		if (editingCard && editingCard.colId) {
+			const card = cards[editingCard.colId].find(c => c.id === editingCard.id);
+			if (card && card.editalId) {
+				try {
+					showLoading('Salvando etapas...');
+					const valores = await import('./valores.js');
+					const existing = await valores.getEdital(card.editalId) || {};
+					existing.etapas = Object.assign({}, existing.etapas || {}, etapasState);
+					await valores.saveEdital(card.editalId, existing);
+					// update local card cache if needed
+					card.etapas = existing.etapas;
+				} catch (err) {
+					console.warn('Erro ao persistir etapas:', err);
+				} finally {
+					hideLoading();
+				}
+			}
+		}
+	}
+
+	// inicializar estado (todos false)
+	steps.forEach(step => {
+		const key = step.dataset.key || ('step_' + (step.dataset.index || Math.random()));
+		etapasState[key] = false;
+		const btn = step.querySelector('.etapa-btn');
+		if (btn) {
+			btn.addEventListener('click', async (e) => {
+				e.preventDefault();
+				// toggle
+				etapasState[key] = !etapasState[key];
+				renderFromState();
+				await persistEtapas();
+			});
+			btn.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+			});
+		}
+	});
+
+	// export helper to set from saved data
+	window.setEtapasFromData = function(dataObj) {
+		if (!dataObj) return;
+		Object.keys(dataObj).forEach(k => { etapasState[k] = !!dataObj[k]; });
+		renderFromState();
+	};
+
+	// initialize from hidden input if JSON present
+	try {
+		const raw = hiddenInput ? hiddenInput.value : null;
+		if (raw) {
+			const parsed = JSON.parse(raw);
+			if (parsed && typeof parsed === 'object') {
+				Object.keys(parsed).forEach(k => { etapasState[k] = !!parsed[k]; });
+			}
+		}
+	} catch (e) { /* ignore parse errors */ }
+	renderFromState();
+}
+
+initEtapasAderencia();
 
 // Modal Colecao Edital
 const btnBibliotecaSolucoes = document.getElementById('btnBibliotecaSolucoes');
