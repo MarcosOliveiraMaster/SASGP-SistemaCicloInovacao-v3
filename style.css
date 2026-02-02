@@ -234,22 +234,7 @@
 	border: 2px solid #ff9800;
 	background: #fff3e0;
 }
-#btnResumoIA {
-	background: #ff9800;
-	color: #fff;
-	border: none;
-	border-radius: 6px;
-	padding: 10px 24px;
-	font-size: 1rem;
-	font-weight: bold;
-	cursor: pointer;
-	box-shadow: 0 2px 8px rgba(255,152,0,0.12);
-	transition: background 0.2s;
-	margin-top: 12px;
-}
-#btnResumoIA:hover {
-	background: #ffb74d;
-}
+
 /* Estado e cidade lado a lado */
 .input-group-row {
 	display: flex;
@@ -531,6 +516,26 @@ body {
 }
 .card:hover {
 	box-shadow: 0 4px 16px rgba(255,152,0,0.18);
+}
+
+/* Estilo para editais sem aderência */
+.card[data-status="sem-aderencia"] {
+	background: #ffebee;
+	border-left-color: #d32f2f;
+	box-shadow: 0 1px 4px rgba(211,47,47,0.10);
+}
+.card[data-status="sem-aderencia"]:hover {
+	box-shadow: 0 4px 16px rgba(211,47,47,0.18);
+}
+
+/* Estilo para editais com prazo de inscrição perdido */
+.card[data-status="prazo-perdido"] {
+	background: #d3d3d3;
+	border-left-color: #424242;
+	box-shadow: 0 1px 4px rgba(66,66,66,0.10);
+}
+.card[data-status="prazo-perdido"]:hover {
+	box-shadow: 0 4px 16px rgba(66,66,66,0.18);
 }
 
 /* Modal */

@@ -3,7 +3,7 @@ const customEquipeSelect = document.getElementById('customEquipeSelect');
 const customEquipeSelected = document.getElementById('customEquipeSelected');
 const customEquipeOptions = document.getElementById('customEquipeOptions');
 if (customEquipeSelect && customEquipeSelected && customEquipeOptions) {
-	function updateEquipeSelected() {
+	window.updateEquipeSelected = function() {
 		const checked = customEquipeOptions.querySelectorAll('input[type="checkbox"]:checked');
 		if (checked.length === 0) {
 			customEquipeSelected.textContent = 'Selecione Equipe';
@@ -33,7 +33,7 @@ if (customEquipeSelect && customEquipeSelected && customEquipeOptions) {
 	});
 	customEquipeOptions.addEventListener('click', function(e) {
 		if (e.target.tagName === 'INPUT') {
-			updateEquipeSelected();
+			window.updateEquipeSelected();
 		}
 	});
 	document.addEventListener('click', function(e) {
@@ -41,7 +41,7 @@ if (customEquipeSelect && customEquipeSelected && customEquipeOptions) {
 			customEquipeSelect.classList.remove('open');
 		}
 	});
-	updateEquipeSelected();
+	window.updateEquipeSelected();
 }
 // Adicionar linha na tabela de atividades
 const btnAddLinha = document.getElementById('btnAddLinha');
@@ -170,6 +170,7 @@ function renderCards(filter = '') {
 				div.className = 'card';
 				div.setAttribute('draggable', 'true');
 				div.dataset.cardId = card.id;
+				div.dataset.status = card.status || '';
 				// Título principal
 				const titulo = document.createElement('div');
 				titulo.textContent = card.text;
@@ -180,9 +181,13 @@ function renderCards(filter = '') {
 					const subtitulo = document.createElement('div');
 					subtitulo.textContent = card.arquivoNome;
 					subtitulo.style.fontSize = '0.93rem';
-					// Se status for 'submissao não aprovada', aplicar cores neutras
+					// Aplicar cores conforme status
 					if (card.status === 'submissao-nao-aprovada') {
 						subtitulo.style.color = '#555';
+					} else if (card.status === 'sem-aderencia') {
+						subtitulo.style.color = '#d32f2f';
+					} else if (card.status === 'prazo-perdido') {
+						subtitulo.style.color = '#424242';
 					} else {
 						subtitulo.style.color = '#ff9800';
 					}
@@ -193,6 +198,16 @@ function renderCards(filter = '') {
 				if (card.status === 'submissao-nao-aprovada') {
 					div.style.background = '#f2f2f2';
 					div.style.color = '#555';
+				} else if (card.status === 'sem-aderencia') {
+					div.style.background = '#ffebee';
+					div.style.borderLeftColor = '#d32f2f';
+					div.style.color = '#333';
+					div.style.boxShadow = '0 1px 4px rgba(211,47,47,0.10)';
+				} else if (card.status === 'prazo-perdido') {
+					div.style.background = '#d3d3d3';
+					div.style.borderLeftColor = '#424242';
+					div.style.color = '#333';
+					div.style.boxShadow = '0 1px 4px rgba(66,66,66,0.10)';
 				}
 				// Barra de progresso
 				if (card.dataLancamento && card.dataEncerramento) {
@@ -336,6 +351,72 @@ openBtn.addEventListener('click', () => {
 	modal.classList.add('show');
 	formAddEdital.reset();
 	nomeArquivoSelecionado.textContent = 'Nenhum arquivo selecionado';
+	
+	// Limpar TODOS os checkboxes de aderência
+	document.querySelectorAll('.aderencia-check').forEach(check => check.checked = false);
+	
+	// Limpar TODOS os status checks
+	document.querySelectorAll('.status-check').forEach(check => check.checked = false);
+	
+	// Limpar equipe
+	document.querySelectorAll('#customEquipeOptions input[type="checkbox"]').forEach(check => check.checked = false);
+	if (window.updateEquipeSelected) window.updateEquipeSelected();
+	
+	// Limpar atividades - manter apenas a primeira linha vazia
+	const tbodyAt = document.getElementById('tbodyAtividades');
+	if (tbodyAt) {
+		const rows = Array.from(tbodyAt.querySelectorAll('tr'));
+		for (let i = rows.length - 1; i > 0; i--) {
+			rows[i].remove();
+		}
+		const firstRow = rows[0];
+		if (firstRow) {
+			const selectResp = firstRow.querySelector('.select-responsavel');
+			const textArea = firstRow.querySelector('.textarea-atividade');
+			const checkbox = firstRow.querySelector('.checkbox-check');
+			if (selectResp) selectResp.value = '';
+			if (textArea) textArea.value = '';
+			if (checkbox) checkbox.checked = false;
+		}
+	}
+	
+	// Limpar calendário - manter apenas a primeira linha vazia
+	const tbodyCal = document.getElementById('tbodyCalendario');
+	if (tbodyCal) {
+		const rows = Array.from(tbodyCal.querySelectorAll('tr'));
+		for (let i = rows.length - 1; i > 0; i--) {
+			rows[i].remove();
+		}
+		const firstRow = rows[0];
+		if (firstRow) {
+			const selectResp = firstRow.querySelector('.select-responsavel');
+			const textArea = firstRow.querySelector('.textarea-atividade');
+			const inputPrazo = firstRow.querySelector('.input-prazo');
+			const checkbox = firstRow.querySelector('.checkbox-check');
+			if (selectResp) selectResp.value = '';
+			if (textArea) textArea.value = '';
+			if (inputPrazo) inputPrazo.value = '';
+			if (checkbox) checkbox.checked = false;
+		}
+	}
+	
+	// Limpar etapas de aderência
+	document.querySelectorAll('#etapasAderencia .step .etapa-btn').forEach(btn => {
+		btn.classList.remove('active');
+	});
+	
+	// Atualizar progresso de aderência
+	const aderenciaChecks = document.querySelectorAll('.aderencia-check');
+	if (aderenciaChecks.length > 0) {
+		const total = aderenciaChecks.length;
+		const checked = document.querySelectorAll('.aderencia-check:checked').length;
+		const percent = Math.round((checked / total) * 100);
+		const progressBar = document.getElementById('aderencia-progress');
+		const percentSpan = document.getElementById('aderencia-percent');
+		if (progressBar) progressBar.style.width = percent + '%';
+		if (percentSpan) percentSpan.textContent = percent + '%';
+	}
+	
 	inputNomeEdital.focus();
 	modal.querySelector('h2').textContent = 'Novo Edital';
 });
@@ -439,17 +520,22 @@ function openEditCardModal(cardId, colId) {
 		inputNomeEdital.focus();
 		modal.querySelector('h2').textContent = 'Editar Edital';
 
-		// carregar estado das etapas salvo no banco (se houver vínculo)
+		// Carregar TODOS os dados do banco de dados
 		(async () => {
 			if (card.editalId) {
 				try {
 					const valores = await import('./valores.js');
 					const data = await valores.getEdital(card.editalId);
-					if (data && data.etapas) {
-						setEtapasFromData(data.etapas);
+					if (data) {
+						// Carregar todos os dados salvos no formulário
+						valores.loadFormFromData(data);
+						// Atualizar a equipe visual
+						if (window.updateEquipeSelected) {
+							window.updateEquipeSelected();
+						}
 					}
 				} catch (err) {
-					console.warn('Erro ao carregar etapas do edital:', err);
+					console.warn('Erro ao carregar edital do banco:', err);
 				}
 			}
 		})();

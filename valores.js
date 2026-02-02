@@ -127,3 +127,183 @@ export async function deleteEdital(editalId) {
   await deleteDoc(ref);
   return true;
 }
+
+export function loadFormFromData(data) {
+  if (!data) return;
+  const form = document.getElementById('formAddEdital');
+  if (!form) return;
+  
+  // Carregar campos básicos nomeados
+  Array.from(form.elements).forEach(el => {
+    if (el.name && data.hasOwnProperty(el.name)) {
+      if (el.type !== 'checkbox' && el.type !== 'submit' && el.type !== 'button') {
+        el.value = data[el.name] || '';
+      }
+    }
+  });
+  
+  // Carregar aderencia checks
+  if (data.aderencia && Array.isArray(data.aderencia)) {
+    document.querySelectorAll('.aderencia-check').forEach(check => {
+      check.checked = data.aderencia.includes(check.value);
+    });
+  }
+  
+  // Carregar etapas de aderência
+  if (data.etapas && typeof data.etapas === 'object') {
+    const steps = document.querySelectorAll('#etapasAderencia .step');
+    steps.forEach(step => {
+      const key = step.dataset.key;
+      const btn = step.querySelector('.etapa-btn');
+      if (data.etapas[key] && btn) {
+        btn.classList.add('active');
+      } else if (btn) {
+        btn.classList.remove('active');
+      }
+    });
+  }
+  
+  // Carregar status checks
+  if (data.statusChecks && Array.isArray(data.statusChecks)) {
+    document.querySelectorAll('.status-check').forEach(check => {
+      check.checked = data.statusChecks.includes(check.value);
+    });
+  }
+  
+  // Carregar equipe
+  if (data.equipe && Array.isArray(data.equipe)) {
+    document.querySelectorAll('#customEquipeOptions input[type="checkbox"]').forEach(check => {
+      check.checked = data.equipe.includes(check.value);
+    });
+  }
+  
+  // Carregar atividades
+  if (data.atividades && Array.isArray(data.atividades)) {
+    const tbody = document.getElementById('tbodyAtividades');
+    if (tbody) {
+      // Remover todas as linhas exceto a primeira
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      for (let i = rows.length - 1; i > 0; i--) {
+        rows[i].remove();
+      }
+      
+      // Limpar a primeira linha
+      const firstRow = rows[0];
+      if (firstRow) {
+        const selectResp = firstRow.querySelector('.select-responsavel');
+        const textArea = firstRow.querySelector('.textarea-atividade');
+        const checkbox = firstRow.querySelector('.checkbox-check');
+        if (selectResp) selectResp.value = '';
+        if (textArea) textArea.value = '';
+        if (checkbox) checkbox.checked = false;
+      }
+      
+      // Adicionar dados das atividades
+      data.atividades.forEach((atividade, idx) => {
+        let row = firstRow;
+        if (idx > 0) {
+          row = document.createElement('tr');
+          row.innerHTML = `
+            <td><select class="select-responsavel"></select></td>
+            <td><textarea class="textarea-atividade" rows="1"></textarea></td>
+            <td><input type="checkbox" class="checkbox-check"></td>
+          `;
+          tbody.appendChild(row);
+          // Atualizar selects com equipe
+          updateResponsaveisSelects();
+        }
+        
+        const selectResp = row.querySelector('.select-responsavel');
+        const textArea = row.querySelector('.textarea-atividade');
+        const checkbox = row.querySelector('.checkbox-check');
+        
+        if (selectResp) selectResp.value = atividade.responsavel || '';
+        if (textArea) textArea.value = atividade.atividade || '';
+        if (checkbox) checkbox.checked = atividade.check || false;
+      });
+    }
+  }
+  
+  // Carregar calendário
+  if (data.calendario && Array.isArray(data.calendario)) {
+    const tbody = document.getElementById('tbodyCalendario');
+    if (tbody) {
+      // Remover todas as linhas exceto a primeira
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      for (let i = rows.length - 1; i > 0; i--) {
+        rows[i].remove();
+      }
+      
+      // Limpar a primeira linha
+      const firstRow = rows[0];
+      if (firstRow) {
+        const selectResp = firstRow.querySelector('.select-responsavel');
+        const textArea = firstRow.querySelector('.textarea-atividade');
+        const inputPrazo = firstRow.querySelector('.input-prazo');
+        const checkbox = firstRow.querySelector('.checkbox-check');
+        if (selectResp) selectResp.value = '';
+        if (textArea) textArea.value = '';
+        if (inputPrazo) inputPrazo.value = '';
+        if (checkbox) checkbox.checked = false;
+      }
+      
+      // Adicionar dados do calendário
+      data.calendario.forEach((item, idx) => {
+        let row = firstRow;
+        if (idx > 0) {
+          row = document.createElement('tr');
+          row.innerHTML = `
+            <td><select class="select-responsavel"></select></td>
+            <td><textarea class="textarea-atividade" rows="1"></textarea></td>
+            <td><input type="date" class="input-prazo"></td>
+            <td><input type="checkbox" class="checkbox-check"></td>
+          `;
+          tbody.appendChild(row);
+          // Atualizar selects com equipe
+          updateResponsaveisSelects();
+        }
+        
+        const selectResp = row.querySelector('.select-responsavel');
+        const textArea = row.querySelector('.textarea-atividade');
+        const inputPrazo = row.querySelector('.input-prazo');
+        const checkbox = row.querySelector('.checkbox-check');
+        
+        if (selectResp) selectResp.value = item.responsavel || '';
+        if (textArea) textArea.value = item.atividade || '';
+        if (inputPrazo) inputPrazo.value = item.prazo || '';
+        if (checkbox) checkbox.checked = item.check || false;
+      });
+    }
+  }
+  
+  // Renderizar progresso de aderência
+  const aderenciaChecks = document.querySelectorAll('.aderencia-check');
+  if (aderenciaChecks.length > 0) {
+    const total = aderenciaChecks.length;
+    const checked = document.querySelectorAll('.aderencia-check:checked').length;
+    const percent = Math.round((checked / total) * 100);
+    const progressBar = document.getElementById('aderencia-progress');
+    const percentSpan = document.getElementById('aderencia-percent');
+    if (progressBar) progressBar.style.width = percent + '%';
+    if (percentSpan) percentSpan.textContent = percent + '%';
+  }
+}
+
+function updateResponsaveisSelects() {
+  const customEquipeOptions = document.getElementById('customEquipeOptions');
+  if (!customEquipeOptions) return;
+  const checked = customEquipeOptions.querySelectorAll('input[type="checkbox"]:checked');
+  const responsaveis = Array.from(checked).map(cb => cb.value);
+  
+  document.querySelectorAll('.select-responsavel').forEach(select => {
+    const currentValue = select.value;
+    select.innerHTML = '<option value="">Selecione</option>';
+    responsaveis.forEach(resp => {
+      const opt = document.createElement('option');
+      opt.value = resp;
+      opt.textContent = resp;
+      select.appendChild(opt);
+    });
+    select.value = currentValue;
+  });
+}
