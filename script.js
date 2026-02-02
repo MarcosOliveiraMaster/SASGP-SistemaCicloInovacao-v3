@@ -248,6 +248,26 @@ function renderCards(filter = '') {
 					progressDiv.appendChild(barDiv);
 					div.appendChild(progressDiv);
 				}
+				// Adicionar status abaixo da barra de progresso
+				const statusMap = {
+					'em-analise': 'Em análise',
+					'em-inscricao': 'Em inscrição',
+					'em-execucao': 'Em execução',
+					'submissao-nao-aprovada': 'Submissão não aprovada',
+					'sem-aderencia': 'Edital sem aderência',
+					'prazo-perdido': 'Prazo de inscrição perdido',
+					'concluido': 'Concluído'
+				};
+				if (card.status && statusMap[card.status]) {
+					const statusDiv = document.createElement('div');
+					statusDiv.textContent = statusMap[card.status];
+					statusDiv.style.fontSize = '0.85rem';
+					statusDiv.style.marginTop = '8px';
+					statusDiv.style.fontWeight = '600';
+					statusDiv.style.color = '#666';
+					statusDiv.style.textAlign = 'left';
+					div.appendChild(statusDiv);
+				}
 				div.addEventListener('dragstart', handleDragStart);
 				div.addEventListener('contextmenu', function(ev) {
 					ev.preventDefault();
