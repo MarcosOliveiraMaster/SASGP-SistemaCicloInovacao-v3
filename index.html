@@ -7,7 +7,26 @@
 	<header class="header">
 		
 		<div class="titulo-analise">SasGP - Análise de Editais</div>
-		<input type="text" id="searchInput" placeholder="Buscar..." />
+		<div class="header-search-filter">
+			<input type="text" id="searchInput" placeholder="Buscar..." />
+			<div class="status-filter">
+				<button type="button" id="statusFilterBtn" class="status-filter-btn">Filtrar por Status ▼</button>
+				<div id="statusFilterDropdown" class="status-filter-dropdown">
+					<div class="status-filter-options">
+						<label><input type="checkbox" class="status-checkbox" value="em-analise"> Em análise</label>
+						<label><input type="checkbox" class="status-checkbox" value="em-inscricao"> Em inscrição</label>
+						<label><input type="checkbox" class="status-checkbox" value="em-execucao"> Em execução</label>
+						<label><input type="checkbox" class="status-checkbox" value="submissao-nao-aprovada"> Submissão não aprovada</label>
+						<label><input type="checkbox" class="status-checkbox" value="sem-aderencia"> Edital sem aderência</label>
+						<label><input type="checkbox" class="status-checkbox" value="prazo-perdido"> Prazo de inscrição perdido</label>
+						<label><input type="checkbox" class="status-checkbox" value="concluido"> Concluído</label>
+					</div>
+					<div class="status-filter-actions">
+						<button type="button" id="statusFilterClear" class="status-filter-clear">Limpar</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="header-buttons">
 			<button id="btnBibliotecaSolucoes">Biblioteca de soluções</button>
 			<button id="openEditalBtn">Adicionar Edital</button>

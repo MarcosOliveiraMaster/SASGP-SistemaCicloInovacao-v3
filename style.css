@@ -421,6 +421,14 @@ body {
 	gap: 12px;
 }
 
+.header-search-filter {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	flex: 1;
+	max-width: 550px;
+}
+
 #searchInput {
 	padding: 10px 16px;
 	border: none;
@@ -429,11 +437,108 @@ body {
 	background: #fff;
 	box-shadow: 0 1px 4px rgba(255,152,0,0.10);
 	outline: none;
-	width: 220px;
+	flex: 1;
 	transition: box-shadow 0.2s;
 }
 #searchInput:focus {
 	box-shadow: 0 2px 8px rgba(255,152,0,0.18);
+}
+
+.status-filter {
+	position: relative;
+}
+
+.status-filter-btn {
+	padding: 10px 14px;
+	border: 2px solid #fff;
+	border-radius: 6px;
+	font-size: 0.95rem;
+	background: rgba(255,255,255,0.2);
+	color: #fff;
+	cursor: pointer;
+	font-weight: 600;
+	transition: all 0.2s;
+	white-space: nowrap;
+}
+
+.status-filter-btn:hover {
+	background: rgba(255,255,255,0.3);
+	border-color: #ffb74d;
+}
+
+.status-filter-dropdown {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background: #fff;
+	border: 2px solid #ff9800;
+	border-radius: 6px;
+	margin-top: 4px;
+	z-index: 100;
+	box-shadow: 0 4px 16px rgba(255,152,0,0.15);
+	min-width: 280px;
+}
+
+.status-filter-dropdown.open {
+	display: block;
+}
+
+.status-filter-options {
+	padding: 12px;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.status-filter-options label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: background 0.2s;
+	margin: 2px 0;
+	user-select: none;
+}
+
+.status-filter-options label:hover {
+	background: #fff7f0;
+}
+
+.status-filter-options input[type="checkbox"] {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	accent-color: #ff9800;
+}
+
+.status-filter-options label span {
+	color: #333;
+	font-size: 0.95rem;
+}
+
+.status-filter-actions {
+	padding: 8px 12px;
+	border-top: 1px solid #f0f0f0;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.status-filter-clear {
+	padding: 6px 12px;
+	background: #f0f0f0;
+	border: none;
+	border-radius: 4px;
+	font-size: 0.9rem;
+	cursor: pointer;
+	color: #666;
+	transition: all 0.2s;
+}
+
+.status-filter-clear:hover {
+	background: #e0e0e0;
+	color: #333;
 }
 
 #openEditalBtn {

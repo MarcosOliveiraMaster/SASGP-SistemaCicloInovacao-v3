@@ -1,3 +1,76 @@
+// ===== Status Filter =====
+const statusFilterBtn = document.getElementById('statusFilterBtn');
+const statusFilterDropdown = document.getElementById('statusFilterDropdown');
+const statusFilterCheckboxes = document.querySelectorAll('.status-checkbox');
+const statusFilterClear = document.getElementById('statusFilterClear');
+const searchInput = document.getElementById('searchInput');
+
+// Abrir/fechar dropdown
+statusFilterBtn.addEventListener('click', function(e) {
+	e.stopPropagation();
+	statusFilterDropdown.classList.toggle('open');
+});
+
+// Fechar dropdown ao clicar fora
+document.addEventListener('click', function(e) {
+	if (!document.querySelector('.status-filter').contains(e.target)) {
+		statusFilterDropdown.classList.remove('open');
+	}
+});
+
+// Carregar seleção de status do localStorage
+function loadStatusFilter() {
+	const saved = localStorage.getItem('statusFilter');
+	if (saved) {
+		const selected = JSON.parse(saved);
+		statusFilterCheckboxes.forEach(checkbox => {
+			checkbox.checked = selected.includes(checkbox.value);
+		});
+	}
+}
+
+// Salvar seleção de status no localStorage
+function saveStatusFilter() {
+	const selected = Array.from(statusFilterCheckboxes)
+		.filter(cb => cb.checked)
+		.map(cb => cb.value);
+	localStorage.setItem('statusFilter', JSON.stringify(selected));
+}
+
+// Filtrar cards ao mudar checkbox
+statusFilterCheckboxes.forEach(checkbox => {
+	checkbox.addEventListener('change', function() {
+		saveStatusFilter();
+		applyFilters();
+	});
+});
+
+// Limpar filtro
+statusFilterClear.addEventListener('click', function() {
+	statusFilterCheckboxes.forEach(checkbox => checkbox.checked = false);
+	saveStatusFilter();
+	applyFilters();
+});
+
+// Aplicar filtros (busca + status)
+function applyFilters() {
+	const searchTerm = searchInput.value.toLowerCase();
+	const selectedStatus = Array.from(statusFilterCheckboxes)
+		.filter(cb => cb.checked)
+		.map(cb => cb.value);
+	
+	// Se nenhum status selecionado, mostra todos
+	const filterByStatus = selectedStatus.length > 0 ? selectedStatus : null;
+	
+	renderCards(searchTerm, filterByStatus);
+}
+
+// Pesquisa ao digitar
+searchInput.addEventListener('input', applyFilters);
+
+// Carregar seleção ao iniciar
+loadStatusFilter();
+
 // Custom multiselect Equipe Executora
 const customEquipeSelect = document.getElementById('customEquipeSelect');
 const customEquipeSelected = document.getElementById('customEquipeSelected');
@@ -160,12 +233,18 @@ let tempArquivoNome = '';
 let cardIdCounter = 1;
 let editingCard = null;
 
-function renderCards(filter = '') {
+function renderCards(filter = '', statusFilter = null) {
 	Object.keys(cards).forEach(colId => {
 		const list = document.getElementById(colId);
 		list.innerHTML = '';
 		cards[colId].forEach(card => {
-			if (!filter || card.text.toLowerCase().includes(filter.toLowerCase())) {
+			// Aplicar filtro de busca
+			const matchesSearch = !filter || card.text.toLowerCase().includes(filter.toLowerCase());
+			
+			// Aplicar filtro de status
+			const matchesStatus = !statusFilter || statusFilter.includes(card.status);
+			
+			if (matchesSearch && matchesStatus) {
 				const div = document.createElement('div');
 				div.className = 'card';
 				div.setAttribute('draggable', 'true');
@@ -561,12 +640,6 @@ function openEditCardModal(cardId, colId) {
 		})();
 	}
 }
-
-// Busca
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', (e) => {
-	renderCards(e.target.value);
-});
 
 // Drag and Drop para mover cards entre colunas
 let draggedCardId = null;
